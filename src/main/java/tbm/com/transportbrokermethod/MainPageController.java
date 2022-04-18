@@ -1,5 +1,6 @@
 package tbm.com.transportbrokermethod;
 
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -48,10 +49,7 @@ public class MainPageController implements Initializable {
 
 
     @FXML
-    private TableView<InputData> table_input;
-
-    @FXML
-    private TableColumn<InputData,String> D_O;
+    private TableView<ObservableList<String>> table_input = new TableView<>();
 
     @FXML
     private TableColumn<InputData,String> col;
@@ -75,8 +73,6 @@ public class MainPageController implements Initializable {
     void add_sup_rec(ActionEvent event)
     {
 
-
-        double max_size = table_input.getMinWidth()-D_O.getPrefWidth();
         int size_rec = parseInt(receiver_input_field.getText());
         int size_sup = parseInt(supplier_input_field.getText());
 
@@ -92,43 +88,53 @@ public class MainPageController implements Initializable {
 
         //adding columns(receivers)
         table_input.getColumns().clear();
-        table_input.getColumns().add(D_O);
 
-        for (int i = 0; i < size_rec; i++)
+
+        ArrayList<String> columnNames = new ArrayList<>();
+
+        for (int i = 0; i <= size_rec; i++)
         {
-            String name = "O-"+(i);
-            //col = new TableColumn(name);
-            //col.setPrefWidth(max_size/size_rec);
 
-            TableColumn<InputData, String> col = new TableColumn<>(name);
+            String name;
+            if(i==0)
+            {
+                 name = "D/O";
+            }
+            else
+            {
+                 name = "O-" + (i);
+            }
+            columnNames.add(name);
 
-            table_input.getColumns().add(col);
+            final int finalIdx = i;
+            TableColumn<ObservableList<String>, String> column = new TableColumn<>(columnNames.get(i));
+            column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue().get(finalIdx)));
+            //column.setCellValueFactory(cellData->{return new ReadOnlyObjectWrapper(cellData.getValue());});
+            table_input.getColumns().add(column);
 
         }
 
 
         // adding rows
-
-
+        int counter =0;
         for (int i = 0; i < size_sup; i++)
         {
-            //add row to list
-            ArrayList<String> temp = new ArrayList<>();
-            int name_id = list.size();
-            String name = "D-"+(name_id);
+            ArrayList<String> a = new ArrayList<>();
+            String name = "D-"+(i+1);
+            a.add(name);
 
-            for (int j = 0; j< size_rec; j++)
+            for(int j=0;j<size_rec;j++)
             {
-                temp.add("0");
+                a.add(counter+"");
+                counter++;
             }
 
-            InputData a = new InputData(name,temp);
+           // for(int j=0;j<a.size();j++)
+                //System.out.println(a.get(j));
 
-            this.list.add(a);
-
-
+            table_input.getItems().add(FXCollections.observableArrayList(a));
         }
-        table_input.setItems(this.list);
+        //table_input.setItems(this.list);
 
         grid_panel.setVisible(true);
     }
@@ -136,12 +142,11 @@ public class MainPageController implements Initializable {
     @FXML
     void load_data(ActionEvent event)
     {
-        for (int i=0;i<list.size();i++)
+        for (int i=0;i<table_input.getItems().size();i++)
         {
-            System.out.println(list.get(i).getSupplier_name());
-            for(int j=0;j<list.get(i).getReceivers().size();j++)
+            for(int j=0;j<table_input.getColumns().size();j++)
             {
-                System.out.print(list.get(i).getReceivers().get(j));
+                System.out.print(table_input.getItems().get(i).get(j));
             }
             System.out.println();
         }
@@ -150,7 +155,14 @@ public class MainPageController implements Initializable {
     @FXML
     void update_input_data(MouseEvent event)
     {
-
+        for (int i=0;i<table_input.getItems().size();i++)
+        {
+            for(int j=0;j<table_input.getColumns().size();j++)
+            {
+                System.out.print(table_input.getItems().get(i).get(j));
+            }
+            System.out.println();
+        }
     }
 
     @FXML
@@ -172,7 +184,7 @@ public class MainPageController implements Initializable {
         O_label.setText("O-" + (y + 1));
         D_label.setText("D-" + (x));
 
-        //table_input.setItems().set(x,new InputData("D-"+x,rec_tem));
+
        // list.get(x).getReceivers().add(grid_value.getText());
        // table_input.setItems(list);
 
@@ -227,15 +239,11 @@ public class MainPageController implements Initializable {
 
         table_input.getSelectionModel().setCellSelectionEnabled(true);
 
-        D_O.setStyle( "-fx-alignment: CENTER");
+
 
         table_input.setEditable(true);
 
-        D_O.setCellFactory(TextFieldTableCell.forTableColumn());
-        D_O.setCellValueFactory(new PropertyValueFactory<InputData,String>("supplier"));
 
-
-        table_input.setItems(list);
 
     }
 
