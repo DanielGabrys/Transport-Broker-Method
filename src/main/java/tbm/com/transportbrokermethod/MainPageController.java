@@ -180,7 +180,7 @@ public class MainPageController implements Initializable {
             String value = grid_value.getText();
 
             //output array
-            input_arr[cur_pos_x][cur_pos_y]=parseInt(value);
+            input_arr[cur_pos_x][cur_pos_y-1]=parseInt(value);
 
 
             ObservableList<String> a = table_input.getItems().get(cur_pos_x);
@@ -233,7 +233,6 @@ public class MainPageController implements Initializable {
 
         table_input.getSelectionModel().setCellSelectionEnabled(true);
         table_input.setEditable(true);
-
 
 
     }
