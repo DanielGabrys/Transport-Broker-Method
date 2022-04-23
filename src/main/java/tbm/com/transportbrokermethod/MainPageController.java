@@ -27,10 +27,13 @@ public class MainPageController implements Initializable {
 
 
     int input_arr[][];
-    int X=0;
-    int Y=0;
     int cur_pos_x;
     int cur_pos_y;
+
+    @FXML
+    private TableView<ObservableList<String>> table_input = new TableView<>();
+
+    ObservableList<Supplier> D_list = FXCollections.observableArrayList();
 
     @FXML
     private Label title_label;
@@ -45,9 +48,17 @@ public class MainPageController implements Initializable {
     private Button add_sup_rec_button;
 
 
+    @FXML
+    private TableView<Supplier> D_input;
 
     @FXML
-    private TableView<ObservableList<String>> table_input = new TableView<>();
+    private TableColumn<Supplier, String> buying_cost;
+
+    @FXML
+    private TableColumn<Supplier, String> supplier;
+
+    @FXML
+    private TableColumn<Supplier, String> supply;
 
 
     @FXML
@@ -118,13 +129,19 @@ public class MainPageController implements Initializable {
 
             for(int j=0;j<size_rec;j++)
             {
-                a.add(0+"");
+                a.add("-");
             }
 
             table_input.getItems().add(FXCollections.observableArrayList(a));
+
+
+            Supplier s = new Supplier(name,"-","-");
+            D_list.add(s);
+            D_input.setItems(D_list);
         }
 
         grid_panel.setVisible(true);
+        D_input.setVisible(true);
     }
 
     @FXML
@@ -170,6 +187,21 @@ public class MainPageController implements Initializable {
             };
 
         });
+    }
+
+
+    @FXML
+    void change_cost(TableColumn.CellEditEvent cell)
+    {
+        Supplier selected = D_input.getSelectionModel().getSelectedItem();
+        selected.setSupply(cell.getNewValue().toString());
+    }
+
+    @FXML
+    void change_supply(TableColumn.CellEditEvent cell)
+    {
+        Supplier selected = D_input.getSelectionModel().getSelectedItem();
+        selected.setCost(cell.getNewValue().toString());
     }
 
 
@@ -230,9 +262,20 @@ public class MainPageController implements Initializable {
     {
 
         grid_panel.setVisible(false);
+        D_input.setVisible(false);
 
         table_input.getSelectionModel().setCellSelectionEnabled(true);
         table_input.setEditable(true);
+        D_input.setEditable(true);
+
+        supplier.setCellFactory(TextFieldTableCell.forTableColumn());
+        supply.setCellFactory(TextFieldTableCell.forTableColumn());
+        buying_cost.setCellFactory(TextFieldTableCell.forTableColumn());
+
+
+        supplier.setCellValueFactory(new PropertyValueFactory<Supplier,String>("name"));
+        supply.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supply"));
+        buying_cost.setCellValueFactory(new PropertyValueFactory<Supplier, String>("cost"));
 
 
     }
