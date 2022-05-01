@@ -35,6 +35,8 @@ public class MainPageController implements Initializable {
 
     ObservableList<Supplier> D_list = FXCollections.observableArrayList();
 
+    ObservableList<Receiver> O_list = FXCollections.observableArrayList();
+
     @FXML
     private Label title_label;
 
@@ -46,6 +48,9 @@ public class MainPageController implements Initializable {
 
     @FXML
     private Button add_sup_rec_button;
+
+    @FXML
+    private Button load_data;
 
 
     @FXML
@@ -59,6 +64,20 @@ public class MainPageController implements Initializable {
 
     @FXML
     private TableColumn<Supplier, String> supply;
+
+
+    @FXML
+    private TableView<Receiver> O_input;
+
+
+    @FXML
+    private TableColumn<Receiver, String> receiver;
+
+    @FXML
+    private TableColumn<Receiver, String> demand;
+
+    @FXML
+    private TableColumn<Receiver, String> sell_cost;
 
 
     @FXML
@@ -94,8 +113,12 @@ public class MainPageController implements Initializable {
         //adding columns
         ArrayList<String> columnNames = new ArrayList<>();
 
+        //clearing data
         table_input.getColumns().clear();
         table_input.getItems().clear();
+
+        D_input.getItems().clear();
+        O_input.getItems().clear();
 
         for (int i = 0; i <= size_rec; i++)
         {
@@ -118,47 +141,47 @@ public class MainPageController implements Initializable {
 
             table_input.getColumns().add(column);
 
+
+            if(i!=0)
+            {
+                //adding receiver table
+                Receiver r = new Receiver(name, "-", "-");
+                O_list.add(r);
+                O_input.setItems(O_list);
+            }
+
         }
 
         // adding rows
-        for (int i = 0; i < size_sup; i++)
-        {
+        for (int i = 0; i < size_sup; i++) {
             ArrayList<String> a = new ArrayList<>();
-            String name = "D-"+(i+1);
+            String name = "D-" + (i + 1);
             a.add(name);
 
-            for(int j=0;j<size_rec;j++)
-            {
+            for (int j = 0; j < size_rec; j++) {
                 a.add("-");
             }
 
             table_input.getItems().add(FXCollections.observableArrayList(a));
 
-
-            Supplier s = new Supplier(name,"-","-");
+            //adding supplier table
+            Supplier s = new Supplier(name, "-", "-");
             D_list.add(s);
             D_input.setItems(D_list);
-        }
 
-        grid_panel.setVisible(true);
-        D_input.setVisible(true);
+
+            grid_panel.setVisible(true);
+            D_input.setVisible(true);
+            O_input.setVisible(true);
+            load_data.setVisible(true);
+        }
     }
 
     @FXML
     void load_data(ActionEvent event)
     {
-        /*
-        for (int i=0;i<table_input.getItems().size();i++)
-        {
-            System.out.println();
-            for(int j=0;j<table_input.getColumns().size();j++)
-            {
-                System.out.print(table_input.getItems().get(i).get(j)+" ");
-            }
-            System.out.println();
-        }
-        */
-        System.out.println("DATA");
+
+        System.out.println("Koszty transportu");
         for (int i=0;i<table_input.getItems().size();i++)
         {
 
@@ -168,6 +191,26 @@ public class MainPageController implements Initializable {
             }
             System.out.println();
         }
+
+        System.out.println("Dostawca");
+        for (int i=0;i<D_input.getItems().size();i++)
+        {
+            System.out.print(D_input.getItems().get(i).getName() + " ");
+            System.out.print(D_input.getItems().get(i).getCost() + " ");
+            System.out.println(D_input.getItems().get(i).getSupply() + " ");
+        }
+
+        System.out.println("Odbiorca");
+        for (int i=0;i<O_input.getItems().size();i++)
+        {
+
+            System.out.print(O_input.getItems().get(i).getName() + " ");
+            System.out.print(O_input.getItems().get(i).getDemand() + " ");
+            System.out.println(O_input.getItems().get(i).getCost() + " ");
+
+        }
+
+
 
     }
 
@@ -222,60 +265,54 @@ public class MainPageController implements Initializable {
 
     }
 
-
-    /*
     @FXML
-    void delete_activity(ActionEvent event)
+    void change_demand(TableColumn.CellEditEvent cell)
     {
-        ObservableList<Activity> selectedRows = table_input.getSelectionModel().getSelectedItems();
-
-        ArrayList<Activity> rows = new ArrayList<>(selectedRows);
-        rows.forEach(row -> table_input.getItems().remove(row));
+        Receiver selected = O_input.getSelectionModel().getSelectedItem();
+        selected.setDemand(cell.getNewValue().toString());
     }
 
     @FXML
-    void changeActivityTime(TableColumn.CellEditEvent cell)
+    void change_sell_cost(TableColumn.CellEditEvent cell)
     {
-        Activity selected = table_input.getSelectionModel().getSelectedItem();
-        selected.setTime(cell.getNewValue().toString());
-
-        int id = table_input.getSelectionModel().getSelectedIndex();
-        list.set(id,table_input.getItems().get(id));
-    }
-
-    @FXML
-    void changeActivitySequnce(TableColumn.CellEditEvent cell)
-    {
-        Activity selected = table_input.getSelectionModel().getSelectedItem();
-        selected.setSequence(cell.getNewValue().toString());
-
-        int id = table_input.getSelectionModel().getSelectedIndex();
-        list.set(id,table_input.getItems().get(id));
-
-
+        Receiver selected = O_input.getSelectionModel().getSelectedItem();
+        selected.setCost(cell.getNewValue().toString());
     }
 
 
-     */
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
 
         grid_panel.setVisible(false);
         D_input.setVisible(false);
+        O_input.setVisible(false);
+        load_data.setVisible(false);
+
 
         table_input.getSelectionModel().setCellSelectionEnabled(true);
         table_input.setEditable(true);
         D_input.setEditable(true);
+        O_input.setEditable(true);
 
+        //supplier
         supplier.setCellFactory(TextFieldTableCell.forTableColumn());
         supply.setCellFactory(TextFieldTableCell.forTableColumn());
         buying_cost.setCellFactory(TextFieldTableCell.forTableColumn());
 
-
         supplier.setCellValueFactory(new PropertyValueFactory<Supplier,String>("name"));
         supply.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supply"));
         buying_cost.setCellValueFactory(new PropertyValueFactory<Supplier, String>("cost"));
+
+        //receiver
+        receiver.setCellFactory(TextFieldTableCell.forTableColumn());
+        demand.setCellFactory(TextFieldTableCell.forTableColumn());
+        sell_cost.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        receiver.setCellValueFactory(new PropertyValueFactory<Receiver,String>("name"));
+        demand.setCellValueFactory(new PropertyValueFactory<Receiver, String>("demand"));
+        sell_cost.setCellValueFactory(new PropertyValueFactory<Receiver, String>("cost"));
+
 
 
     }

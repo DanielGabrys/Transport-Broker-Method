@@ -11,7 +11,7 @@
 
 <AnchorPane prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tbm.com.transportbrokermethod.MainPageController">
    <children>
-      <Button fx:id="load_data" layoutX="259.0" layoutY="492.0" mnemonicParsing="false" onAction="#load_data" prefHeight="71.0" prefWidth="281.0" text="WCZYTAJ">
+      <Button fx:id="load_data" layoutX="747.0" layoutY="493.0" mnemonicParsing="false" onAction="#load_data" prefHeight="71.0" prefWidth="281.0" text="WCZYTAJ">
          <font>
             <Font size="28.0" />
          </font>
@@ -43,6 +43,13 @@
           <TableColumn fx:id="supplier" prefWidth="90.0" text="DOSTAWCA" />
           <TableColumn fx:id="supply" onEditCommit="#change_supply" text="PODAŻ" />
             <TableColumn fx:id="buying_cost" onEditCommit="#change_cost" prefWidth="150.0" text="KOSZTY ZAKUPU" />
+        </columns>
+      </TableView>
+      <TableView fx:id="O_input" layoutX="1136.0" layoutY="190.0" prefHeight="226.0" prefWidth="345.0">
+        <columns>
+          <TableColumn fx:id="receiver" prefWidth="96.0" text="ODBIORCA" />
+          <TableColumn fx:id="demand" onEditCommit="#change_demand" prefWidth="90.0" text="POPYT" />
+            <TableColumn fx:id="sell_cost" onEditCommit="#change_sell_cost" prefWidth="158.0" text="CENA SPRZEDAŻY" />
         </columns>
       </TableView>
 
