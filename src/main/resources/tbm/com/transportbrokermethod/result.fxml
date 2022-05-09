@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="541.0" prefWidth="886.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tbm.com.transportbrokermethod.ResultController">
+   <children>
+      <TableView layoutX="25.0" layoutY="44.0" prefHeight="230.0" prefWidth="386.0">
+        <columns>
+          <TableColumn prefWidth="75.0" text="C1" />
+          <TableColumn prefWidth="75.0" text="C2" />
+        </columns>
+      </TableView>
+      <Pane layoutX="328.0" layoutY="309.0" prefHeight="200.0" prefWidth="230.0">
+         <children>
+            <Label fx:id="final_incone_label" layoutX="35.0" layoutY="100.0" prefHeight="38.0" prefWidth="48.0" text="ZYSK:" />
+            <Label fx:id="cost_label" layoutX="35.0" layoutY="52.0" prefHeight="16.0" prefWidth="119.0" text="Koszty transportu" />
+            <Label fx:id="buying_cost_label" layoutX="35.0" layoutY="75.0" text="Koszty zakupu" />
+            <Label fx:id="income_label" layoutX="35.0" layoutY="30.0" text="Przychód" />
+            <Text fx:id="cost" layoutX="175.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="48.0" />
+            <Text fx:id="buying_cost" layoutX="175.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="27.690917968749886" />
+            <Text fx:id="final_income" layoutX="170.0" layoutY="123.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="36.69091796874966" />
+            <Text fx:id="income" layoutX="175.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="27.69091796875" />
+         </children>
+      </Pane>
+      <TableView layoutX="482.0" layoutY="44.0" prefHeight="230.0" prefWidth="353.0">
+        <columns>
+          <TableColumn prefWidth="75.0" text="C1" />
+          <TableColumn prefWidth="75.0" text="C2" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

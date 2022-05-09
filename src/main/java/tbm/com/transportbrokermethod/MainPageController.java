@@ -8,7 +8,10 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -16,8 +19,11 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -209,6 +215,24 @@ public class MainPageController implements Initializable {
             System.out.println(O_input.getItems().get(i).getCost() + " ");
 
         }
+
+        Parent root;
+        try
+        {
+            FXMLLoader fxmlLoader = new FXMLLoader(Start.class.getResource("result.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("TBM Result");
+            stage.setScene(new Scene(fxmlLoader.load(), 900, 600));
+            stage.show();
+            // Hide this current window (if this is what you want)
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
 
 
 
