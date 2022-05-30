@@ -1,5 +1,6 @@
 package tbm.com.algorithm;
 
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,9 @@ public class TBMAlgorithm
     private static int[][] optimizationTable;   //tablica ze wskaźnikami optymalności (,,druga tablica")
     private static int[] alpha;                 //tablica z alfami
     private static int[] beta;                  //tablica z betami
+    private static int[] tempAlpha;
+    private static int[] tempBeta;
+
 
     //pomocnicza metoda sprawdzająca czy tablica transportowa została już wypełniona [NIE SPRAWDZA TRAS FIKCYJNYCH]
     private static boolean isTableFilled(boolean[][] t)
@@ -51,11 +55,11 @@ public class TBMAlgorithm
                 beta[i] = Number.NaN;
             }
 
-            findAlphaAndBeta(alpha, beta, profits);
+            findAlphaAndBeta(alpha, beta, transportTable);
 
             //constructOptimizationTable();
 
-            int optimizationTable = new int[recipient.length][provider.length];
+            int [][] optimizationTable = new int[recipient.length][provider.length];
 
             //po wywołaniu tej funkcji mamy tabelę zapełnioną zerami czyli "x" i wartościami
             ConstructOptTable(transportTable,alpha,beta,profits, optimizationTable);
@@ -77,10 +81,10 @@ public class TBMAlgorithm
         //krok 1A
 
         //ustalenie rozmiarów tablic
-        int currentStateProvider[provider.length+1];
-        int currentStateRecipient[recipient.length+1];
+        int currentStateProvider[] = new int[provider.length+1];
+        int currentStateRecipient[] = new int[recipient.length+1];
         transportTable = new int[provider.length+1][recipient.length+1]; //tabela transportów
-        boolean isFilled[provider.length+1][recipient.length+1];
+        boolean isFilled[][] = new boolean[provider.length+1][recipient.length+1];
 
         //obliczenie podaży fikcyjnego dostawcy
         int imaginaryProvider = 0;
@@ -103,14 +107,14 @@ public class TBMAlgorithm
         //zmienne pomocnicze: maksymalna wartość i odpowiadające jej współrzędne w tablicy oraz
         //zmienna służąca sprawdzeniu czy max w danej iteracji był już przypisany
         float maxValue = 0.F;
-        int maxValueCoordinates[2];
-        boolean wasMinValueAssigned;
+        int maxValueCoordinates[] = new int[2];
+        boolean wasMaxValueAssigned;
 
         //TU PRZY SPRAWDZANIU W DŁUGOŚCIACH MOŻNA DAĆ -1 I WTEDY NIE BĘDZIE SPRAWDZAŁ FIKCYJNYCH
         while(!isTableFilled(isFilled))
         {
             //znajdź maksymalny zysk dla komórki nie mającej wypełnienia
-            wasMinValueAssigned = false;
+            wasMaxValueAssigned = false;
             for(int i=0; i<profits.length; i++)
             {
                 for(int j=0; j<profits[0].length; j++)
@@ -119,12 +123,12 @@ public class TBMAlgorithm
                     if(!isFilled[i][j])
                     {
                         //przypadek dla pierwszego przypisania
-                        if(!wasMinValueAssigned)
+                        if(!wasMaxValueAssigned)
                         {
                             maxValue = profits[i][j];
                             maxValueCoordinates[0] = i;
                             maxValueCoordinates[1] = j;
-                            wasMinValueAssigned = true;
+                            wasMaxValueAssigned = true;
                         }
                         //przypadek dla znalezienia nowego maxa
                         else if(profits[i][j] > maxValue)
@@ -181,30 +185,30 @@ public class TBMAlgorithm
         //uzupełnienie kolumny fikcyjnego odbiorcy
         for(int i=0; i<transportTable.length; i++)
         {
-            if(!isFilled[i][recipent.length])
+            if(!isFilled[i][recipient.length])
             {
-                transportTable[i][recipent.length] = currentStateProvider[i];
-                currentStateRecipient[recipent.length] -= currentStateProvider[i];
+                transportTable[i][recipient.length] = currentStateProvider[i];
+                currentStateRecipient[recipient.length] -= currentStateProvider[i];
                 currentStateProvider[i] = 0;
-                isFilled[i][recipent.length] = true;
+                isFilled[i][recipient.length] = true;
             }
         }
     }
 
-    private static void findAlphaAndBeta(int[] alpha, int[] beta, int [][] profits)
+    private static void findAlphaAndBeta(int[] alpha, int[] beta, int [][] transportTable)
     {
         //zmienna pomocnicza do sprawdzania czy pole ma wartosc ktora mozna obliczyc alfę albo betę
-        public static boolean isValue = true;
+        boolean isValue = true;
 
 
-        public static int[] tempAlpha = Arrays.copyOf(alpha, alpha.length);
-        public static int[] tempBeta = Arrays.copyOf(beta, beta.length);
+        tempAlpha = Arrays.copyOf(alpha, alpha.length);
+        tempBeta = Arrays.copyOf(beta, beta.length);
 
         //sprawdzenie czy liczba jest "liczbą"
         for(int i=0; i< alpha.length; i++)
         {
-        if(Number.isNaN(alpha[i]))
-            isValue = false;
+            if(Number.isNaN(alpha[i]))
+                isValue = false;
         }
 
         for(int i=0; i< beta.length; i++)
@@ -222,19 +226,19 @@ public class TBMAlgorithm
         //obliczenie wartosci
         for(int i=0; i< alpha.length; i++)
         {
-            for(j=0; j<beta.length; j++)
+            for(int j=0; j<beta.length; j++)
             {
-                if(profits[i][j]>0)
+                if(transportTable[i][j]>0)
                 {
                     //jesli beta nie jest numerem, a alfa jest
                     if(Number.isNaN(beta[j]) && !Number.isNaN(alpha[i]))
                     {
-                        beta[j] = profits[i][j] - alpha[i];
+                        beta[j] = transportTable[i][j] - alpha[i];
                     }
                     //odwrotna sytuacja
                     else if(!Number.isNaN(beta[j]) && Number.isNaN(alpha[i]))
                     {
-                        alpha[i] = profits[i][j] - beta[j];
+                        alpha[i] = transportTable[i][j] - beta[j];
                     }
                 }
             }
@@ -252,11 +256,11 @@ public class TBMAlgorithm
             }
         }
 
-    //samowywołanie się funkcji
-    findAlphaAndBeta(tempAlpha, tempBeta, profits);
+        //samowywołanie się funkcji
+        findAlphaAndBeta(tempAlpha, tempBeta, transportTable);
     }
 
-    private static void ConstructOptTable(int[][] transportTable, int[] alpha, int[] beta, int[][] profits, int[][] optimizationTable)
+    private static void ConstructOptTable(int[][] transportTable, int[] alpha, int[] beta, float[][] profits, int[][] optimizationTable)
     {
         for(int i=0; i< transportTable.length; i++)
         {
@@ -265,32 +269,44 @@ public class TBMAlgorithm
                 //jeśli w tabeli transportów jest wartość, ustawia zero czyli "x"
                 if(!Number.isNaN(transportTable[i][i]))
                 {
-                    optimizationTable[i][j] = 0;
+                    optimizationTable[i][j] = Number.NaN;
                 }
 
                 else
                 {
-                    optimizationTable[i][j] = profits[i][j] - alpha[i]- beta[j];
+                    optimizationTable[i][j] = transportTable[i][j] - alpha[i]- beta[j];
                 }
             }
         }
     }
-}
 
-private static void isOptimal(int[][] optimizationTable)
-{
-    for (int i = 0; i < optimizationTable.length; i++)
+
+    private static void isOptimal(int[][] optimizationTable)
     {
-        for(int j = 0; j< optimizationTable[0].length; j++)
+        int maxVal = 0;
+        int OptimalPathCoordinates[][][] = new int[4][1][1];
+        boolean wasPathAssigned = false;
+
+        for (int i = 0; i < optimizationTable.length; i++)
         {
-            if(optimizationTable[i][j] >0)
+            for(int j = 0; j< optimizationTable[0].length; j++)
             {
-                //do nothing for now
+                if(!Number.isNaN(optimizationTable[i][j]) && optimizationTable[i][j] > maxVal)
+                {
+                    maxVal = optimizationTable[i][j];
+
+                }
             }
         }
-    }
 
-    break;
-}
+        while(!wasPathAssigned)
+        {
+            for(int i=0; i< optimizationTable.length; i++)
+            {
+
+            }
+
+        }
+    }
 
 }
