@@ -466,30 +466,38 @@ public class MainPageController implements Initializable
 
     ArrayList<String> columnNames = new ArrayList<>();
 
-    for (int i = 0; i < result[0].length; i++) {
+    for (int i = 0; i <= result[0].length; i++) {
 
         String name;
-        if (i == 0) {
-            name = "D/O";
+        if(i==0)
+        {
+            name = "D/0";
         }
-        if (i > col) {
-            name = "OF" + (i - col);
-        } else {
+        else if (i == result[0].length)
+        {
+            System.out.println("elo");
+            name = "OF-" + (i - col);
+        }
+        else
+        {
             name = "O-" + (i);
         }
         columnNames.add(name);
+        System.out.println(columnNames.get(i));
 
-        double size = table_input.getPrefWidth()/(col +1);
+        double size = result_table.getPrefWidth()/(col +1);
         final int finalIdx = i;
         TableColumn<ObservableList<String>, String> column = new TableColumn<>(columnNames.get(i));
         column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue().get(finalIdx)));
-        column.setPrefWidth(size);
+        //column.setPrefWidth(size);
 
         result_table.getColumns().add(column);
         //result_table2.getColumns().add(column);
+        result_table.setVisible(true);
 
     }
 
+   /*
     for (int i = 0; i < result.length; i++)
     {
         ArrayList<String> a = new ArrayList<>();
@@ -514,15 +522,23 @@ public class MainPageController implements Initializable
         result_table.setVisible(true);
         result_table2.setVisible(true);
 
+
         result_table.getItems().add(FXCollections.observableArrayList(a));
         //result_table2.getItems().add(FXCollections.observableArrayList(b));
 
-        //calculate_buying_cost();
+        calculate_buying_cost();
         calculate_transport_cost();
-       // calculate_income();
-       // calculate_final_income();
+        calculate_income();
+        calculate_final_income();
+
+
+
 
     }
+    */
+
+
+
 }
 
 
@@ -537,10 +553,10 @@ public class MainPageController implements Initializable
                 if(i<row && j<col)
                 {
                     sum += result[i][j] * input_arr[i][j];
-                    System.out.print(result[i][j]+"*"+input_arr[i][j]+"\n");
+                    //System.out.print(result[i][j]+"*"+input_arr[i][j]+"\n");
                 }
             }
-            System.out.print(sum+"\n");
+            //System.out.print(sum+"\n");
         }
 
         cost.setText(String.valueOf(sum));
@@ -551,9 +567,9 @@ public class MainPageController implements Initializable
     {
         int sum=0;
 
-        for(int i=0; i<result.length; i++)
+        for(int i=0; i<row; i++)
         {
-            for(int j=0; j<result[0].length; j++)
+            for(int j=0; j<col; j++)
             {
                     sum += parseInt(D_input.getItems().get(i).getSupply())*result[i][j];
             }
@@ -567,9 +583,9 @@ public class MainPageController implements Initializable
     {
         int sum=0;
 
-        for(int i=0; i<result.length; i++)
+        for(int i=0; i<row;i++)
         {
-            for(int j=0; j<result[0].length; j++)
+            for(int j=0; j<col; j++)
             {
                 sum += parseInt(O_input.getItems().get(i).getCost())*result[i][j];
             }

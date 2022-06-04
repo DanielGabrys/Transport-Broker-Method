@@ -65,10 +65,10 @@
             <Label fx:id="cost_label" layoutX="35.0" layoutY="52.0" prefHeight="16.0" prefWidth="119.0" text="Koszty transportu" />
             <Label fx:id="buying_cost_label" layoutX="35.0" layoutY="75.0" text="Koszty zakupu" />
             <Label fx:id="income_label" layoutX="35.0" layoutY="30.0" text="Przychód" />
-            <Text fx:id="cost" layoutX="167.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="48.0" />
-            <Text fx:id="buying_cost_final" layoutX="167.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="27.690917968749886" />
-            <Text fx:id="final_income" layoutX="167.0" layoutY="123.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="36.69091796874966" />
-            <Text fx:id="income" layoutX="168.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="27.69091796875" />
+            <Text fx:id="cost" layoutX="167.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="62.666748046875" />
+            <Text fx:id="buying_cost_final" layoutX="167.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="62.357666015624886" />
+            <Text fx:id="final_income" layoutX="167.0" layoutY="111.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="71.99999999999955" />
+            <Text fx:id="income" layoutX="168.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="52.5" />
          </children>
       </Pane>
 
