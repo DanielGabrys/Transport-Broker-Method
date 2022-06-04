@@ -6,11 +6,12 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tbm.com.transportbrokermethod.MainPageController">
+<AnchorPane prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tbm.com.transportbrokermethod.MainPageController">
    <children>
-      <Button fx:id="load_data" layoutX="259.0" layoutY="460.0" mnemonicParsing="false" onAction="#load_data" prefHeight="71.0" prefWidth="281.0" text="WCZYTAJ">
+      <Button fx:id="load_data" layoutX="747.0" layoutY="493.0" mnemonicParsing="false" onAction="#load_data" prefHeight="71.0" prefWidth="281.0" text="WCZYTAJ">
          <font>
             <Font size="28.0" />
          </font>
@@ -22,7 +23,14 @@
                   <Font size="31.0" />
                </font>
             </Label>
-            <TableView fx:id="table_input" editable="true" layoutX="161.0" layoutY="159.0" minHeight="-Infinity" minWidth="500.0" onMouseClicked="#update_input_data" prefHeight="254.0" prefWidth="500.0">
+      <Pane fx:id="grid_panel" layoutX="157.0" layoutY="129.0" prefHeight="61.0" prefWidth="486.0">
+         <children>
+            <Button fx:id="add_grid_button" layoutX="232.0" layoutY="18.0" minWidth="53.0" mnemonicParsing="false" onAction="#add_grid_value" prefHeight="30.0" prefWidth="79.0" text="Zmień" />
+            <Label fx:id="D_label" layoutX="107.0" layoutY="18.0" prefHeight="30.0" prefWidth="35.0" text="D/O" />
+            <TextField fx:id="grid_value" layoutX="153.0" layoutY="18.0" prefHeight="30.0" prefWidth="79.0" promptText="wartość " />
+         </children>
+      </Pane>
+            <TableView fx:id="table_input" editable="true" layoutX="159.0" layoutY="198.0" minHeight="-Infinity" minWidth="500.0" onMouseClicked="#update_input_data" prefHeight="254.0" prefWidth="500.0">
               <columns>
                 <TableColumn fx:id="D_O" prefWidth="60.0" text="D/O" />
               </columns>
@@ -30,6 +38,20 @@
       <TextField fx:id="supplier_input_field" alignment="CENTER" layoutX="167.0" layoutY="80.0" prefHeight="26.0" prefWidth="156.0" promptText="Liczba Dostawców" />
       <TextField fx:id="receiver_input_field" alignment="CENTER" layoutX="348.0" layoutY="80.0" prefHeight="26.0" prefWidth="146.0" promptText="Liczba odbiorców" />
       <Button fx:id="add_sup_rec_button" alignment="CENTER" layoutX="526.0" layoutY="78.0" mnemonicParsing="false" onAction="#add_sup_rec" text="Utwórz tabele" />
+      <TableView fx:id="D_input" layoutX="728.0" layoutY="198.0" prefHeight="211.0" prefWidth="318.0">
+        <columns>
+          <TableColumn fx:id="supplier" prefWidth="90.0" text="DOSTAWCA" />
+          <TableColumn fx:id="supply" onEditCommit="#change_supply" text="PODAŻ" />
+            <TableColumn fx:id="buying_cost" onEditCommit="#change_cost" prefWidth="150.0" text="KOSZTY ZAKUPU" />
+        </columns>
+      </TableView>
+      <TableView fx:id="O_input" layoutX="1136.0" layoutY="190.0" prefHeight="226.0" prefWidth="345.0">
+        <columns>
+          <TableColumn fx:id="receiver" prefWidth="96.0" text="ODBIORCA" />
+          <TableColumn fx:id="demand" onEditCommit="#change_demand" prefWidth="90.0" text="POPYT" />
+            <TableColumn fx:id="sell_cost" onEditCommit="#change_sell_cost" prefWidth="158.0" text="CENA SPRZEDAŻY" />
+        </columns>
+      </TableView>
 
 
         

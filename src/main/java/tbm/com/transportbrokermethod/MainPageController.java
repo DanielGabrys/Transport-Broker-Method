@@ -1,29 +1,47 @@
 package tbm.com.transportbrokermethod;
 
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+import javafx.util.Callback;
 
+import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static java.lang.Integer.parseInt;
 
 public class MainPageController implements Initializable {
 
-    ObservableList<InputData> list = FXCollections.observableArrayList();
+
+    int input_arr[][];
+    int cur_pos_x;
+    int cur_pos_y;
+
+    @FXML
+    private TableView<ObservableList<String>> table_input = new TableView<>();
+
+    ObservableList<Supplier> D_list = FXCollections.observableArrayList();
+
+    ObservableList<Receiver> O_list = FXCollections.observableArrayList();
 
     @FXML
     private Label title_label;
@@ -37,105 +55,187 @@ public class MainPageController implements Initializable {
     @FXML
     private Button add_sup_rec_button;
 
-
-
-    @FXML
-    private TableView<InputData> table_input;
-
-    @FXML
-    private TableColumn<InputData,String> D_O;
-
-    @FXML
-    private TableColumn<InputData,String> col;
-
-
-
-
-    @FXML
-    private Button delete_activity;
-
     @FXML
     private Button load_data;
 
-    @FXML
-    private HBox input_panel;
 
     @FXML
-    private TextField activity_input_field;
+    private TableView<Supplier> D_input;
 
     @FXML
-    private TextField time_input_field;
+    private TableColumn<Supplier, String> buying_cost;
 
     @FXML
-    private TextField sequence_input_field;
+    private TableColumn<Supplier, String> supplier;
 
+    @FXML
+    private TableColumn<Supplier, String> supply;
+
+
+    @FXML
+    private TableView<Receiver> O_input;
+
+
+    @FXML
+    private TableColumn<Receiver, String> receiver;
+
+    @FXML
+    private TableColumn<Receiver, String> demand;
+
+    @FXML
+    private TableColumn<Receiver, String> sell_cost;
+
+
+    @FXML
+    private Pane grid_panel;
+
+    @FXML
+    private Label D_label;
+
+    @FXML
+    private Label O_label;
+
+    @FXML
+    private TextField grid_value;
 
     @FXML
     void add_sup_rec(ActionEvent event)
     {
 
-        double max_size = table_input.getMinWidth()-D_O.getPrefWidth();
         int size_rec = parseInt(receiver_input_field.getText());
         int size_sup = parseInt(supplier_input_field.getText());
-        int arr_size=Math.max(size_rec, size_sup);
-        System.out.println(arr_size);
+        //System.out.println(size_rec+" "+size_sup);
 
-
-        //adding columns(receivers)
-        table_input.getColumns().clear();
-        table_input.getColumns().add(D_O);
-
-        for (int i = 0; i < size_rec; i++)
+        double size = table_input.getPrefWidth()/(size_rec +1);
+        input_arr = new int[size_sup][size_rec];
+        for(int i =0;i<size_sup;i++)
         {
-            String name = "O-"+(i+1);
-            col = new TableColumn(name);
-            col.setPrefWidth(max_size/size_rec);
-
-            table_input.getColumns().add(col);
-
-            col.setCellFactory(TextFieldTableCell.forTableColumn());
-            //col.setCellValueFactory(new PropertyValueFactory<InputData,String>(name));
-
-            //table_input.getColumns().add(col);
+            for(int j=0;j<size_rec;j++)
+            {
+                input_arr[i][j]=0;
+            }
         }
 
+        //adding columns
+        ArrayList<String> columnNames = new ArrayList<>();
 
-        // adding rows
+        //clearing data
+        table_input.getColumns().clear();
+        table_input.getItems().clear();
 
-        for (int i = 0; i < size_sup; i++)
+        D_input.getItems().clear();
+        O_input.getItems().clear();
+
+        for (int i = 0; i <= size_rec; i++)
         {
-            //add row to list
-            ArrayList<String> temp = new ArrayList<>();
-            int name_id = list.size();
-            String name = "D-"+(name_id+1);
 
-            for (int j = 0; j< size_rec; j++)
+            String name;
+            if(i==0)
             {
-                temp.add("0");
+                 name = "D/O";
+            }
+            else
+            {
+                 name = "O-" + (i);
+            }
+            columnNames.add(name);
+
+            final int finalIdx = i;
+            TableColumn<ObservableList<String>, String> column = new TableColumn<>(columnNames.get(i));
+            column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue().get(finalIdx)));
+            column.setPrefWidth(size);
+
+            table_input.getColumns().add(column);
+
+
+            if(i!=0)
+            {
+                //adding receiver table
+                Receiver r = new Receiver(name, "-", "-");
+                O_list.add(r);
+                O_input.setItems(O_list);
             }
 
-            InputData a = new InputData(name,temp);
-
-            this.list.add(a);
-
-
         }
-        table_input.setItems(this.list);
 
+        // adding rows
+        for (int i = 0; i < size_sup; i++) {
+            ArrayList<String> a = new ArrayList<>();
+            String name = "D-" + (i + 1);
+            a.add(name);
+
+            for (int j = 0; j < size_rec; j++) {
+                a.add("-");
+            }
+
+            table_input.getItems().add(FXCollections.observableArrayList(a));
+
+            //adding supplier table
+            Supplier s = new Supplier(name, "-", "-");
+            D_list.add(s);
+            D_input.setItems(D_list);
+
+
+            grid_panel.setVisible(true);
+            D_input.setVisible(true);
+            O_input.setVisible(true);
+            load_data.setVisible(true);
+        }
     }
 
     @FXML
     void load_data(ActionEvent event)
     {
-        for (int i=0;i<list.size();i++)
+
+        System.out.println("Koszty transportu");
+        for (int i=0;i<table_input.getItems().size();i++)
         {
-            System.out.println(list.get(i).getSupplier());
-            for(int j=0;j<list.get(i).getReceivers().size();j++)
+
+            for(int j=0;j<table_input.getColumns().size()-1;j++)
             {
-                System.out.print(list.get(i).getReceivers().get(j));
+                System.out.print(input_arr[i][j]+" ");
             }
             System.out.println();
         }
+
+        System.out.println("Dostawca");
+        for (int i=0;i<D_input.getItems().size();i++)
+        {
+            System.out.print(D_input.getItems().get(i).getName() + " ");
+            System.out.print(D_input.getItems().get(i).getCost() + " ");
+            System.out.println(D_input.getItems().get(i).getSupply() + " ");
+        }
+
+        System.out.println("Odbiorca");
+        for (int i=0;i<O_input.getItems().size();i++)
+        {
+
+            System.out.print(O_input.getItems().get(i).getName() + " ");
+            System.out.print(O_input.getItems().get(i).getDemand() + " ");
+            System.out.println(O_input.getItems().get(i).getCost() + " ");
+
+        }
+
+        Parent root;
+        try
+        {
+            FXMLLoader fxmlLoader = new FXMLLoader(Start.class.getResource("result.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("TBM Result");
+            stage.setScene(new Scene(fxmlLoader.load(), 900, 600));
+            stage.show();
+            // Hide this current window (if this is what you want)
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
+
     }
 
     @FXML
@@ -145,69 +245,99 @@ public class MainPageController implements Initializable {
         selectedCells.addListener(new ListChangeListener<TablePosition>() {
             @Override
             public void onChanged(Change change) {
-                for (TablePosition pos : selectedCells) {
-                    //System.out.println("Cell selected in row "+pos.getRow()+" and column "+pos.getTableColumn());
-                    TablePosition posit = table_input.getSelectionModel().getSelectedCells().get(0);
-                    int row = pos.getRow();
-                    InputData item = table_input.getItems().get(row);
-                    TableColumn col = pos.getTableColumn();
-                    String data = (String) col.getCellObservableValue(item).getValue();
-                    System.out.println(data);
-
+                for (TablePosition pos : selectedCells)
+                {
+                    //System.out.println("Cell selected in row "+pos.getRow()+" and column "+pos.getTableColumn().getText());
+                    cur_pos_x=pos.getRow();
+                    cur_pos_y=pos.getColumn();
                 }
-            }
+            };
+
         });
     }
 
 
-    /*
     @FXML
-    void delete_activity(ActionEvent event)
+    void change_cost(TableColumn.CellEditEvent cell)
     {
-        ObservableList<Activity> selectedRows = table_input.getSelectionModel().getSelectedItems();
-
-        ArrayList<Activity> rows = new ArrayList<>(selectedRows);
-        rows.forEach(row -> table_input.getItems().remove(row));
+        Supplier selected = D_input.getSelectionModel().getSelectedItem();
+        selected.setSupply(cell.getNewValue().toString());
     }
 
     @FXML
-    void changeActivityTime(TableColumn.CellEditEvent cell)
+    void change_supply(TableColumn.CellEditEvent cell)
     {
-        Activity selected = table_input.getSelectionModel().getSelectedItem();
-        selected.setTime(cell.getNewValue().toString());
+        Supplier selected = D_input.getSelectionModel().getSelectedItem();
+        selected.setCost(cell.getNewValue().toString());
+    }
 
-        int id = table_input.getSelectionModel().getSelectedIndex();
-        list.set(id,table_input.getItems().get(id));
+
+    @FXML
+    void add_grid_value(ActionEvent event)
+    {
+
+            String value = grid_value.getText();
+
+            //output array
+            input_arr[cur_pos_x][cur_pos_y-1]=parseInt(value);
+
+
+            ObservableList<String> a = table_input.getItems().get(cur_pos_x);
+            a.set(cur_pos_y, value);
+            System.out.println(cur_pos_x + " " + cur_pos_y);
+            table_input.getItems().set(cur_pos_x, FXCollections.observableArrayList(a));
+
     }
 
     @FXML
-    void changeActivitySequnce(TableColumn.CellEditEvent cell)
+    void change_demand(TableColumn.CellEditEvent cell)
     {
-        Activity selected = table_input.getSelectionModel().getSelectedItem();
-        selected.setSequence(cell.getNewValue().toString());
+        Receiver selected = O_input.getSelectionModel().getSelectedItem();
+        selected.setDemand(cell.getNewValue().toString());
+    }
 
-        int id = table_input.getSelectionModel().getSelectedIndex();
-        list.set(id,table_input.getItems().get(id));
-
-
+    @FXML
+    void change_sell_cost(TableColumn.CellEditEvent cell)
+    {
+        Receiver selected = O_input.getSelectionModel().getSelectedItem();
+        selected.setCost(cell.getNewValue().toString());
     }
 
 
-     */
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
 
+        grid_panel.setVisible(false);
+        D_input.setVisible(false);
+        O_input.setVisible(false);
+        load_data.setVisible(false);
+
+
         table_input.getSelectionModel().setCellSelectionEnabled(true);
-
-        D_O.setStyle( "-fx-alignment: CENTER");
-
         table_input.setEditable(true);
+        D_input.setEditable(true);
+        O_input.setEditable(true);
 
-        D_O.setCellFactory(TextFieldTableCell.forTableColumn());
-        D_O.setCellValueFactory(new PropertyValueFactory<InputData,String>("supplier"));
+        //supplier
+        supplier.setCellFactory(TextFieldTableCell.forTableColumn());
+        supply.setCellFactory(TextFieldTableCell.forTableColumn());
+        buying_cost.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        table_input.setItems(list);
+        supplier.setCellValueFactory(new PropertyValueFactory<Supplier,String>("name"));
+        supply.setCellValueFactory(new PropertyValueFactory<Supplier, String>("supply"));
+        buying_cost.setCellValueFactory(new PropertyValueFactory<Supplier, String>("cost"));
+
+        //receiver
+        receiver.setCellFactory(TextFieldTableCell.forTableColumn());
+        demand.setCellFactory(TextFieldTableCell.forTableColumn());
+        sell_cost.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        receiver.setCellValueFactory(new PropertyValueFactory<Receiver,String>("name"));
+        demand.setCellValueFactory(new PropertyValueFactory<Receiver, String>("demand"));
+        sell_cost.setCellValueFactory(new PropertyValueFactory<Receiver, String>("cost"));
+
+
 
     }
 

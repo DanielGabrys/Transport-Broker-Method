@@ -7,9 +7,15 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class Start extends Application {
+
+
+public class Start extends Application
+{
+    Scene result;
+
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws IOException
+    {
         FXMLLoader fxmlLoader = new FXMLLoader(Start.class.getResource("mainPage.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1600, 900);
         stage.setTitle("transport Broker Method");
