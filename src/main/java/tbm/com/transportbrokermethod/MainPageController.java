@@ -20,6 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -110,6 +111,35 @@ public class MainPageController implements Initializable
 
     @FXML
     private TextField grid_value;
+
+
+
+    @FXML
+    private Text buying_cost_final;
+
+    @FXML
+    private Label buying_cost_label;
+
+    @FXML
+    private Text cost;
+
+    @FXML
+    private Label cost_label;
+
+    @FXML
+    private Text final_income;
+
+    @FXML
+    private Label final_incone_label;
+
+    @FXML
+    private Text income;
+
+    @FXML
+    private Label income_label;
+
+
+
 
     @FXML
     void add_sup_rec(ActionEvent event)
@@ -384,8 +414,8 @@ public class MainPageController implements Initializable
         D_input.setVisible(false);
         O_input.setVisible(false);
         load_data.setVisible(false);
-        //result_table.setVisible(false);
-       // result_table2.setVisible(false);
+        result_table.setVisible(false);
+        result_table2.setVisible(false);
 
 
         table_input.getSelectionModel().setCellSelectionEnabled(true);
@@ -449,9 +479,11 @@ public class MainPageController implements Initializable
         }
         columnNames.add(name);
 
+        double size = table_input.getPrefWidth()/(col +1);
         final int finalIdx = i;
         TableColumn<ObservableList<String>, String> column = new TableColumn<>(columnNames.get(i));
         column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue().get(finalIdx)));
+        column.setPrefWidth(size);
 
         result_table.getColumns().add(column);
         //result_table2.getColumns().add(column);
@@ -471,22 +503,88 @@ public class MainPageController implements Initializable
         }
 
         a.add(name2);
+        b.add(name2);
 
         for (int j = 0; j < col; j++)
         {
             a.add(String.valueOf(result[i][j]));
-            b.add(String.valueOf(result[i][j]));
+           // b.add(String.valueOf(result[i][j]));
         }
 
-       // result_table.setVisible(true);
-        //result_table2.setVisible(true);
+        result_table.setVisible(true);
+        result_table2.setVisible(true);
 
         result_table.getItems().add(FXCollections.observableArrayList(a));
         //result_table2.getItems().add(FXCollections.observableArrayList(b));
+
+        //calculate_buying_cost();
+        calculate_transport_cost();
+       // calculate_income();
+       // calculate_final_income();
 
     }
 }
 
 
+    int calculate_transport_cost()
+    {
+        int sum=0;
+
+        for(int i=0; i<result.length; i++)
+        {
+            for(int j=0; j<result[0].length; j++)
+            {
+                if(i<row && j<col)
+                {
+                    sum += result[i][j] * input_arr[i][j];
+                    System.out.print(result[i][j]+"*"+input_arr[i][j]+"\n");
+                }
+            }
+            System.out.print(sum+"\n");
+        }
+
+        cost.setText(String.valueOf(sum));
+        return sum;
+    }
+
+    int calculate_buying_cost()
+    {
+        int sum=0;
+
+        for(int i=0; i<result.length; i++)
+        {
+            for(int j=0; j<result[0].length; j++)
+            {
+                    sum += parseInt(D_input.getItems().get(i).getSupply())*result[i][j];
+            }
+
+        }
+        buying_cost_final.setText(String.valueOf(sum));
+        return sum;
+    }
+
+    int calculate_income()
+    {
+        int sum=0;
+
+        for(int i=0; i<result.length; i++)
+        {
+            for(int j=0; j<result[0].length; j++)
+            {
+                sum += parseInt(O_input.getItems().get(i).getCost())*result[i][j];
+            }
+
+        }
+        income.setText(String.valueOf(sum));
+        return sum;
+    }
+
+    int calculate_final_income()
+    {
+        int income= calculate_income()-calculate_transport_cost()-calculate_buying_cost();
+        final_income.setText(String.valueOf(income));
+
+        return income;
+    }
 
 }
