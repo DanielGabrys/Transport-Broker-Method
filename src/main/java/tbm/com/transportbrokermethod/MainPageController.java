@@ -485,11 +485,11 @@ public class MainPageController implements Initializable
         columnNames.add(name);
         System.out.println(columnNames.get(i));
 
-        double size = result_table.getPrefWidth()/(col +1);
+        double size = result_table.getPrefWidth()/(col +2);
         final int finalIdx = i;
         TableColumn<ObservableList<String>, String> column = new TableColumn<>(columnNames.get(i));
         column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue().get(finalIdx)));
-        //column.setPrefWidth(size);
+        column.setPrefWidth(size);
 
         result_table.getColumns().add(column);
         //result_table2.getColumns().add(column);
@@ -497,23 +497,24 @@ public class MainPageController implements Initializable
 
     }
 
-   /*
-    for (int i = 0; i < result.length; i++)
+
+    for (int i = 0; i <= result.length; i++)
     {
         ArrayList<String> a = new ArrayList<>();
-        ArrayList<String> b = new ArrayList<>();
+        //ArrayList<String> b = new ArrayList<>();
 
         String name2;
         if (i >= row) {
             name2 = "DF-" + (i - row);
-        } else {
+        } else
+        {
             name2 = "D-" + (i + 1);
         }
 
         a.add(name2);
-        b.add(name2);
+        //b.add(name2);
 
-        for (int j = 0; j < col; j++)
+        for (int j = 0; j < result[0].length; j++)
         {
             a.add(String.valueOf(result[i][j]));
            // b.add(String.valueOf(result[i][j]));
@@ -535,7 +536,7 @@ public class MainPageController implements Initializable
 
 
     }
-    */
+
 
 
 
