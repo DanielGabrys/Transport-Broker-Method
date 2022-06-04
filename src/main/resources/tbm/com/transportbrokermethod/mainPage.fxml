@@ -9,9 +9,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tbm.com.transportbrokermethod.MainPageController">
+<AnchorPane prefHeight="1100.0" prefWidth="1700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tbm.com.transportbrokermethod.MainPageController">
    <children>
-      <Button fx:id="load_data" layoutX="747.0" layoutY="493.0" mnemonicParsing="false" onAction="#load_data" prefHeight="71.0" prefWidth="281.0" text="WCZYTAJ">
+      <Button fx:id="load_data" layoutX="753.0" layoutY="428.0" mnemonicParsing="false" onAction="#load_data" prefHeight="71.0" prefWidth="281.0" text="WCZYTAJ">
          <font>
             <Font size="28.0" />
          </font>
@@ -52,6 +52,7 @@
             <TableColumn fx:id="sell_cost" onEditCommit="#change_sell_cost" prefWidth="158.0" text="CENA SPRZEDAŻY" />
         </columns>
       </TableView>
+      <TableView fx:id="result_table" layoutX="340.0" layoutY="555.0" prefHeight="384.0" prefWidth="528.0" />
 
 
         

@@ -29,19 +29,32 @@ import java.util.*;
 
 import static java.lang.Integer.parseInt;
 
-public class MainPageController implements Initializable {
+public class MainPageController implements Initializable
+{
 
 
     int input_arr[][];
     int cur_pos_x;
     int cur_pos_y;
 
+    static  int col=0;
+    static int row=0;
+
+    static int[][] result;
+
     @FXML
     private TableView<ObservableList<String>> table_input = new TableView<>();
 
+    @FXML
     ObservableList<Supplier> D_list = FXCollections.observableArrayList();
 
+    @FXML
     ObservableList<Receiver> O_list = FXCollections.observableArrayList();
+
+    @FXML
+    private TableView<ObservableList<String>> result_table = new TableView<>();
+    @FXML
+    private TableView<ObservableList<String>> result_table2 = new TableView<>();
 
     @FXML
     private Label title_label;
@@ -102,8 +115,12 @@ public class MainPageController implements Initializable {
     void add_sup_rec(ActionEvent event)
     {
 
+
         int size_rec = parseInt(receiver_input_field.getText());
         int size_sup = parseInt(supplier_input_field.getText());
+
+        col = size_rec;
+        row =size_sup;
         //System.out.println(size_rec+" "+size_sup);
 
         double size = table_input.getPrefWidth()/(size_rec +1);
@@ -187,10 +204,63 @@ public class MainPageController implements Initializable {
     void load_data(ActionEvent event)
     {
 
-        System.out.println("Koszty transportu");
+        int[] provider = new int[row];
+        int[] recipient = new int[col];
+        float[][] profits = new float[row][col];
+
+        /*
+        provider[0] = 20;
+        provider[1] = 30;
+        recipient[0] = 10;
+        recipient[1] = 28;
+        recipient[2] = 27;
+        profits[0][0] = 12.F;
+        profits[0][1] = 1.F;
+        profits[0][2] = 3.F;
+        profits[1][0] = 6.F;
+        profits[1][1] = 4.F;
+        profits[1][2] = -1.F;
+        */
+
+
+        for (int i=0;i<table_input.getItems().size();i++)
+        {
+            provider[i]= parseInt(D_input.getItems().get(i).getCost());
+
+            System.out.print(provider[i]+" ");
+        }
+        System.out.println();
+
+        for(int i=0;i<table_input.getColumns().size()-1;i++)
+        {
+            recipient[i]= parseInt(O_input.getItems().get(i).getDemand());
+
+            System.out.print(recipient[i]+" ");
+        }
+        System.out.println();
+
         for (int i=0;i<table_input.getItems().size();i++)
         {
 
+            for(int j=0;j<table_input.getColumns().size()-1;j++)
+            {
+                int value = parseInt(O_input.getItems().get(j).getCost()) - input_arr[i][j]-parseInt(D_input.getItems().get(i).getSupply());
+                //System.out.println(O_input.getItems().get(j).getCost()+" "+input_arr[i][j]+" "+D_input.getItems().get(i).getSupply());
+                profits[i][j] = value;
+                System.out.print(profits[i][j]+" ");
+            }
+            System.out.println();
+        }
+
+        System.out.println();
+
+
+        result = tbm.com.algorithm.TBMAlgorithm.compute(provider, recipient, profits);
+
+
+        System.out.println("Koszty transportu");
+        for (int i=0;i<table_input.getItems().size();i++)
+        {
             for(int j=0;j<table_input.getColumns().size()-1;j++)
             {
                 System.out.print(input_arr[i][j]+" ");
@@ -216,6 +286,10 @@ public class MainPageController implements Initializable {
 
         }
 
+
+        final_results();
+
+        /*
         Parent root;
         try
         {
@@ -230,9 +304,7 @@ public class MainPageController implements Initializable {
         catch (IOException e) {
             e.printStackTrace();
         }
-
-
-
+        */
 
 
 
@@ -312,6 +384,8 @@ public class MainPageController implements Initializable {
         D_input.setVisible(false);
         O_input.setVisible(false);
         load_data.setVisible(false);
+        //result_table.setVisible(false);
+       // result_table2.setVisible(false);
 
 
         table_input.getSelectionModel().setCellSelectionEnabled(true);
@@ -341,6 +415,77 @@ public class MainPageController implements Initializable {
 
     }
 
+
+    int[][] get_result()
+    {
+        return result;
+    }
+
+    void final_results()
+    {
+
+
+    for (int i = 0; i < result.length; i++)
+    {
+        for (int j = 0; j < result[0].length; j++)
+        {
+            System.out.print(result[i][j] + " ");
+        }
+        System.out.print("\n");
+    }
+
+    ArrayList<String> columnNames = new ArrayList<>();
+
+    for (int i = 0; i < result[0].length; i++) {
+
+        String name;
+        if (i == 0) {
+            name = "D/O";
+        }
+        if (i > col) {
+            name = "OF" + (i - col);
+        } else {
+            name = "O-" + (i);
+        }
+        columnNames.add(name);
+
+        final int finalIdx = i;
+        TableColumn<ObservableList<String>, String> column = new TableColumn<>(columnNames.get(i));
+        column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue().get(finalIdx)));
+
+        result_table.getColumns().add(column);
+        //result_table2.getColumns().add(column);
+
+    }
+
+    for (int i = 0; i < result.length; i++)
+    {
+        ArrayList<String> a = new ArrayList<>();
+        ArrayList<String> b = new ArrayList<>();
+
+        String name2;
+        if (i >= row) {
+            name2 = "DF-" + (i - row);
+        } else {
+            name2 = "D-" + (i + 1);
+        }
+
+        a.add(name2);
+
+        for (int j = 0; j < col; j++)
+        {
+            a.add(String.valueOf(result[i][j]));
+            b.add(String.valueOf(result[i][j]));
+        }
+
+       // result_table.setVisible(true);
+        //result_table2.setVisible(true);
+
+        result_table.getItems().add(FXCollections.observableArrayList(a));
+        //result_table2.getItems().add(FXCollections.observableArrayList(b));
+
+    }
+}
 
 
 
