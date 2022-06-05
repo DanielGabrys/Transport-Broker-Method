@@ -169,6 +169,9 @@ public class MainPageController implements Initializable {
         result_table.getColumns().clear();
         result_table.getItems().clear();
 
+        result_table2.getColumns().clear();
+        result_table2.getItems().clear();
+
         cost.setText("-");
         buying_cost_final.setText("-");
         income.setText("-");
