@@ -170,6 +170,14 @@ public class MainPageController implements Initializable
         table_input.getColumns().clear();
         table_input.getItems().clear();
 
+        result_table.getColumns().clear();
+        result_table.getItems().clear();
+
+        cost.setText("-");
+        buying_cost_final.setText("-");
+        income.setText("-");
+        final_income.setText("-");
+
         D_input.getItems().clear();
         O_input.getItems().clear();
 
@@ -498,7 +506,7 @@ public class MainPageController implements Initializable
     }
 
 
-    for (int i = 0; i <= result.length; i++)
+    for (int i = 0; i < result.length; i++)
     {
         ArrayList<String> a = new ArrayList<>();
         //ArrayList<String> b = new ArrayList<>();
@@ -516,7 +524,7 @@ public class MainPageController implements Initializable
 
         for (int j = 0; j < result[0].length; j++)
         {
-            a.add(String.valueOf(result[i][j]));
+                 a.add(String.valueOf(result[i][j]));
            // b.add(String.valueOf(result[i][j]));
         }
 
