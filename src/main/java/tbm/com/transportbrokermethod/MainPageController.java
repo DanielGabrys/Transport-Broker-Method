@@ -42,6 +42,7 @@ public class MainPageController implements Initializable
     static int row=0;
 
     static int[][] result;
+    static float[][] profits;
 
     @FXML
     private TableView<ObservableList<String>> table_input = new TableView<>();
@@ -244,7 +245,7 @@ public class MainPageController implements Initializable
 
         int[] provider = new int[row];
         int[] recipient = new int[col];
-        float[][] profits = new float[row][col];
+        profits = new float[row][col];
 
         /*
         provider[0] = 20;
@@ -453,12 +454,6 @@ public class MainPageController implements Initializable
 
     }
 
-
-    int[][] get_result()
-    {
-        return result;
-    }
-
     void final_results()
     {
 
@@ -483,7 +478,6 @@ public class MainPageController implements Initializable
         }
         else if (i == result[0].length)
         {
-            System.out.println("elo");
             name = "OF-" + (i - col);
         }
         else
@@ -491,7 +485,7 @@ public class MainPageController implements Initializable
             name = "O-" + (i);
         }
         columnNames.add(name);
-        System.out.println(columnNames.get(i));
+        //System.out.println(columnNames.get(i));
 
         double size = result_table.getPrefWidth()/(col +2);
         final int finalIdx = i;
@@ -500,16 +494,17 @@ public class MainPageController implements Initializable
         column.setPrefWidth(size);
 
         result_table.getColumns().add(column);
-        //result_table2.getColumns().add(column);
+        result_table2.getColumns().add(column);
         result_table.setVisible(true);
 
     }
 
+    float[][] temp_prof= create_temp_result();
 
     for (int i = 0; i < result.length; i++)
     {
         ArrayList<String> a = new ArrayList<>();
-        //ArrayList<String> b = new ArrayList<>();
+        ArrayList<String> b = new ArrayList<>();
 
         String name2;
         if (i >= row) {
@@ -520,12 +515,12 @@ public class MainPageController implements Initializable
         }
 
         a.add(name2);
-        //b.add(name2);
+        b.add(name2);
 
         for (int j = 0; j < result[0].length; j++)
         {
-                 a.add(String.valueOf(result[i][j]));
-           // b.add(String.valueOf(result[i][j]));
+            a.add(String.valueOf(result[i][j]));
+            b.add(String.valueOf(temp_prof[i][j]));
         }
 
         result_table.setVisible(true);
@@ -533,7 +528,7 @@ public class MainPageController implements Initializable
 
 
         result_table.getItems().add(FXCollections.observableArrayList(a));
-        //result_table2.getItems().add(FXCollections.observableArrayList(b));
+        result_table2.getItems().add(FXCollections.observableArrayList(b));
 
         calculate_buying_cost();
         calculate_transport_cost();
@@ -612,4 +607,27 @@ public class MainPageController implements Initializable
         return income;
     }
 
+    float[][] create_temp_result()
+    {
+        float [][]res_temp = new float[result.length][result[0].length];
+        for(int i=0;i<result.length;i++)
+        {
+            for(int j=0;j<result[0].length;j++)
+            {
+                res_temp[i][j]=0;
+
+            }
+        }
+
+        for(int i=0;i<row;i++)
+        {
+            for(int j=0;j<col;j++)
+            {
+                res_temp[i][j]=profits[i][j];
+
+            }
+        }
+
+        return res_temp;
+    }
 }

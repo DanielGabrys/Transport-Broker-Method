@@ -59,18 +59,24 @@
             <Font size="23.0" />
          </font>
       </Label>
-      <Pane layoutX="887.0" layoutY="614.0" prefHeight="200.0" prefWidth="230.0">
+      <Pane layoutX="106.0" layoutY="566.0" prefHeight="200.0" prefWidth="230.0">
          <children>
-            <Label fx:id="final_incone_label" layoutX="35.0" layoutY="100.0" prefHeight="38.0" prefWidth="48.0" text="ZYSK:" />
+            <Label fx:id="final_incone_label" layoutX="35.0" layoutY="100.0" prefHeight="38.0" prefWidth="48.0" text="ZYSK:" textFill="#eb290b" />
             <Label fx:id="cost_label" layoutX="35.0" layoutY="52.0" prefHeight="16.0" prefWidth="119.0" text="Koszty transportu" />
             <Label fx:id="buying_cost_label" layoutX="35.0" layoutY="75.0" text="Koszty zakupu" />
             <Label fx:id="income_label" layoutX="35.0" layoutY="30.0" text="Przychód" />
             <Text fx:id="cost" layoutX="163.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="62.666748046875" />
             <Text fx:id="buying_cost_final" layoutX="163.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="62.357666015624886" />
-            <Text fx:id="final_income" layoutX="162.0" layoutY="123.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="71.99999999999955" />
+            <Text fx:id="final_income" fill="#fc2807" layoutX="162.0" layoutY="123.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="71.99999999999955" />
             <Text fx:id="income" layoutX="163.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="62.357666015625" />
          </children>
       </Pane>
+      <TableView fx:id="result_table2" layoutX="1001.0" layoutY="589.0" prefHeight="384.0" prefWidth="528.0" />
+      <Label layoutX="1146.0" layoutY="550.0" prefHeight="31.0" prefWidth="281.0" text="Zyski jednostkowe">
+         <font>
+            <Font size="23.0" />
+         </font>
+      </Label>
 
 
         
